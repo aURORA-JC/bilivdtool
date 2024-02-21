@@ -11,14 +11,14 @@ func TestDoFileOperations(t *testing.T) {
 		wantErr  bool
 	}{
 		{
-			name: "1",
+			name:     "1",
 			filePath: "./v.m4s",
-			wantErr: false,
+			wantErr:  false,
 		},
 		{
-			name: "2",
+			name:     "2",
 			filePath: "./a.m4s",
-			wantErr: false,
+			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {

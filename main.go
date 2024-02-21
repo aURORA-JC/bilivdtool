@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bilivdtool/core"
 	"flag"
 	"fmt"
 	"log/slog"
 	"os"
+
+	"bilivdtool/core"
 )
 
 var version string

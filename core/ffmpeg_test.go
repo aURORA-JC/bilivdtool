@@ -16,8 +16,8 @@ func TestDoMergeOperations(t *testing.T) {
 		{
 			name: "test 1",
 			args: args{
-				videoPath: "./v.m4s",
-				audioPath: "./a.m4s",
+				videoPath:  "./v.m4s",
+				audioPath:  "./a.m4s",
 				outputPath: "./ouput.mp4",
 			},
 			wantErr: false,

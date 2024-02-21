@@ -9,14 +9,16 @@ import (
 	"regexp"
 )
 
-const UNENCRYPTED_FILE_HEAD_PATTERN = `^\x00{3}.+$ftypiso5`
-const PADDING_CHARACTER_PATERN = `0`
-const TEMP_FILE_PATTERN = "bvdttmp"
-const CHUNK_SIZE = 4096
+const (
+	UNENCRYPTED_FILE_HEAD_PATTERN = `^\x00{3}.+$ftypiso5`
+	PADDING_CHARACTER_PATERN      = `0`
+	TEMP_FILE_PATTERN             = "bvdttmp"
+	CHUNK_SIZE                    = 4096
+)
 
 func DoFileOperations(filePath string) error {
 	// open file
-	file, err := os.OpenFile(filePath, os.O_RDWR, 0644)
+	file, err := os.OpenFile(filePath, os.O_RDWR, 0o644)
 	if err != nil {
 		return err
 	}
@@ -79,69 +81,69 @@ func removePadding(file *os.File, paddingLength int) error {
 		return nil
 	}
 
-    // create a tmp file
+	// create a tmp file
 	tmpFile, err := os.CreateTemp("", TEMP_FILE_PATTERN)
 	if err != nil {
 		return err
 	}
 	defer tmpFile.Close()
-    slog.Info("created tmp file at " + tmpFile.Name())
+	slog.Info("created tmp file at " + tmpFile.Name())
 
-    // copy file to tmp
+	// copy file to tmp
 	rw := bufio.NewReadWriter(bufio.NewReader(file), bufio.NewWriter(tmpFile))
-    if err = copyFile(rw, true, paddingLength); err != nil {
-        return err
-    }
+	if err = copyFile(rw, true, paddingLength); err != nil {
+		return err
+	}
 	slog.Info("copied data to tmp")
 
-    // move pointers to the start of files and copy from tmp to origin file
-    file.Seek(0, 0)
-    tmpFile.Seek(0,0)
-    rw = bufio.NewReadWriter(bufio.NewReader(tmpFile), bufio.NewWriter(file))
-    if err = copyFile(rw, false, 0); err != nil {
-        return err
-    }
+	// move pointers to the start of files and copy from tmp to origin file
+	file.Seek(0, 0)
+	tmpFile.Seek(0, 0)
+	rw = bufio.NewReadWriter(bufio.NewReader(tmpFile), bufio.NewWriter(file))
+	if err = copyFile(rw, false, 0); err != nil {
+		return err
+	}
 	slog.Info("moved pointers and copied data from tmp to origin")
 
 	return nil
 }
 
 func copyFile(rw *bufio.ReadWriter, skipPadding bool, paddingLength int) error {
-    // if read source has padding, skip padding
-    if skipPadding {
-        for i := 0; i < paddingLength; i++ {
-            _, err := rw.ReadByte()
-            if err != nil {
-                return err
-            }
-        }
+	// if read source has padding, skip padding
+	if skipPadding {
+		for i := 0; i < paddingLength; i++ {
+			_, err := rw.ReadByte()
+			if err != nil {
+				return err
+			}
+		}
 		slog.Info("skipped paddings")
-    }
+	}
 
-    // create chunk with CHUNK_SIZE, copy data chunk by chunk
+	// create chunk with CHUNK_SIZE, copy data chunk by chunk
 	chunk := make([]byte, CHUNK_SIZE)
-    for {
-        n, err := rw.Read(chunk)
-        if err != nil && err != io.EOF {
-            return err
-        }
+	for {
+		n, err := rw.Read(chunk)
+		if err != nil && err != io.EOF {
+			return err
+		}
 
-        if n == 0 {
-            break
-        }
+		if n == 0 {
+			break
+		}
 
-        _, err = rw.Write(chunk[:n])
-        if err != nil {
-            return err
-        }
-    }
+		_, err = rw.Write(chunk[:n])
+		if err != nil {
+			return err
+		}
+	}
 
-    // clear the buffer and write to disk
-    err := rw.Flush()
-    if err != nil {
-        return err
-    }
+	// clear the buffer and write to disk
+	err := rw.Flush()
+	if err != nil {
+		return err
+	}
 	slog.Info("data copied")
 
-    return nil
+	return nil
 }
