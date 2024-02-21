@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-const version = ""
+var version string
 
 func main() {
 	fmt.Println("bilivdtool v" + version)
@@ -18,8 +18,8 @@ func main() {
 	flag.Parse()
 
 	if *videoPath == "" || *audioPath == "" || *outputPath == "" {
-		fmt.Println("\tUsage: bilivdtool -v [video_path] -a [audio_path] -o [output_path]")
-		fmt.Println("\t\tMore Detail: https://github.com/aURORA-JC/bilivdtool")
+		fmt.Println("Usage: bilivdtool -v [video_path] -a [audio_path] -o [output_path]")
+		fmt.Println("More Detail: https://github.com/aURORA-JC/bilivdtool")
 		os.Exit(1)
 	}
 
