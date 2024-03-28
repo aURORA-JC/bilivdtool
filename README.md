@@ -22,6 +22,14 @@ Alternatively, you can place the FFmpeg binary file in the same folder as the `b
 bilivdtool -v [video_path] -a [audio_path] -o [output_path]
 ```
 
+## Build
+
+```shell
+git clone https://github.com/aURORA-JC/bilivdtool.git
+cd ./bilivdtool
+make
+```
+
 ## About
 
 After downloading the video from Bilibili using either the official client or web scripts, it becomes apparent that the video stream and the audio stream are stored in separate files.
