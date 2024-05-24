@@ -10,11 +10,11 @@ A handy tool designed to decode Bilibili's videos and seamlessly merge both vide
 
 ## Configuration
 
-"This tool's video merge functionality is based on [FFmpeg](https://ffmpeg.org). So, if you need to install FFmpeg on your operating system, you can download it from the [official site](https://ffmpeg.org/download.html).
+This tool's video merge functionality is based on [FFmpeg](https://ffmpeg.org). So, if you need to install FFmpeg on your operating system, you can download it from the [official site](https://ffmpeg.org/download.html).
 
 After installing FFmpeg, please make sure to add its path to the system's PATH variable.
 
-Alternatively, you can place the FFmpeg binary file in the same folder as the `bilivdtool`."
+Alternatively, you can place the FFmpeg binary file in the same folder as the `bilivdtool`.
 
 ## Usage
 
