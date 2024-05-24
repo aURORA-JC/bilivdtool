@@ -10,9 +10,12 @@ import (
 )
 
 var version string
+var buildTime string
 
 func main() {
 	fmt.Println("bilivdtool v" + version)
+	fmt.Println("Build Time: " + buildTime + "\n")
+
 	videoPath := flag.String("v", "", "video file path")
 	audioPath := flag.String("a", "", "audio file path")
 	outputPath := flag.String("o", "", "output file path")

@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	UNENCRYPTED_FILE_HEAD_PATTERN = `^\x00{3}.+$ftypiso5`
-	PADDING_CHARACTER_PATERN      = `0`
-	TEMP_FILE_PATTERN             = "bvdttmp"
-	CHUNK_SIZE                    = 4096
+	unencryptedFileHeadPattern = `^\x00{3}.+$ftypiso5`
+	paddingCharacterPattern    = `0`
+	tempFilePattern            = "bvdttmp"
+	chunkSize                  = 4096
 )
 
 func DoFileOperations(filePath string) error {
@@ -31,10 +31,10 @@ func DoFileOperations(filePath string) error {
 		return err
 	}
 
-	// calulate padding
+	// calculate padding
 	paddingLength := 0
 	if !checkFilePrefix(headStr) {
-		paddingLength = getPaddinglength(headStr)
+		paddingLength = getPaddingLength(headStr)
 	}
 
 	// remove padding
@@ -60,14 +60,14 @@ func getHeaderString(file *os.File) (string, error) {
 }
 
 func checkFilePrefix(headStr string) bool {
-	ufhPattern := regexp.MustCompile(UNENCRYPTED_FILE_HEAD_PATTERN)
+	ufhPattern := regexp.MustCompile(unencryptedFileHeadPattern)
 	matches := ufhPattern.FindString(headStr)
 
 	return len(matches) != 0
 }
 
-func getPaddinglength(headStr string) int {
-	pcPattern := regexp.MustCompile(PADDING_CHARACTER_PATERN)
+func getPaddingLength(headStr string) int {
+	pcPattern := regexp.MustCompile(paddingCharacterPattern)
 	matches := pcPattern.FindAllString(headStr, -1)
 
 	slog.Info(fmt.Sprintf("matched padding: %v", matches))
@@ -82,11 +82,11 @@ func removePadding(file *os.File, paddingLength int) error {
 	}
 
 	// create a tmp file
-	tmpFile, err := os.CreateTemp("", TEMP_FILE_PATTERN)
+	tmpFile, err := os.CreateTemp("", tempFilePattern)
 	if err != nil {
 		return err
 	}
-	defer tmpFile.Close()
+	defer os.Remove(tmpFile.Name())
 	slog.Info("created tmp file at " + tmpFile.Name())
 
 	// copy file to tmp
@@ -121,7 +121,7 @@ func copyFile(rw *bufio.ReadWriter, skipPadding bool, paddingLength int) error {
 	}
 
 	// create chunk with CHUNK_SIZE, copy data chunk by chunk
-	chunk := make([]byte, CHUNK_SIZE)
+	chunk := make([]byte, chunkSize)
 	for {
 		n, err := rw.Read(chunk)
 		if err != nil && err != io.EOF {
